@@ -1,0 +1,2442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MK's Ultimate Full Stack Master Prep Portal</title>
+    <style>
+        /* --- DESIGN SYSTEM & CSS VARIABLES --- */
+        :root {
+            --primary-bg: #090d16;
+            --card-bg: #111827;
+            --accent-color: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #1f2937;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --code-bg: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            padding: 40px 20px;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px dashed var(--border-color);
+        }
+
+        header h1 {
+            color: var(--accent-color);
+            font-size: 3rem;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.3rem;
+        }
+
+        /* --- NESTED ACCORDION ARCHITECTURE --- */
+        .topic-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            margin-bottom: 35px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
+        }
+
+        .topic-header,
+        .concept-header {
+            padding: 22px 26px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .topic-header {
+            background-color: #1f2937;
+            font-size: 1.6rem;
+            font-weight: 700;
+            border-left: 6px solid var(--accent-color);
+        }
+
+        .concept-header {
+            background-color: #111827;
+            font-size: 1.3rem;
+            font-weight: 600;
+            padding-left: 40px;
+            border-left: 5px solid var(--success);
+            border-bottom: 1px solid #1f2937;
+        }
+
+        .topic-header:hover {
+            background-color: #374151;
+        }
+
+        .concept-header:hover {
+            background-color: #1f2937;
+        }
+
+        .arrow-icon {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .active>.arrow-icon {
+            transform: rotate(180deg);
+            color: var(--accent-color);
+        }
+
+        .concepts-container,
+        .answer-content {
+            display: none;
+        }
+
+        .answer-content {
+            padding: 30px 40px 30px 75px;
+            background-color: #070a12;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1.05rem;
+            color: #e2e8f0;
+        }
+
+        /* --- PRESENTATION UTILITIES --- */
+        h4 {
+            color: var(--accent-color);
+            margin: 25px 0 12px 0;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 6px;
+        }
+
+        p {
+            margin-bottom: 14px;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+            border: 1px solid #334155;
+        }
+
+        code {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            color: #f1f5f9;
+            font-size: 0.98rem;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin: 22px 0;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th,
+        td {
+            padding: 14px 18px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        th {
+            background-color: #0f172a;
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #0b0f19;
+        }
+
+        ul,
+        ol {
+            margin-left: 30px;
+            margin-top: 12px;
+            margin-bottom: 18px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .smart-box {
+            background-color: rgba(56, 189, 248, 0.08);
+            border-left: 5px solid var(--accent-color);
+            padding: 22px;
+            margin: 22px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .smart-box strong {
+            color: var(--accent-color);
+            display: block;
+            margin-bottom: 6px;
+            font-size: 1.1rem;
+        }
+
+        .output-box {
+            background-color: #020617;
+            border-left: 4px solid var(--warning);
+            padding: 14px 20px;
+            margin: 18px 0;
+            color: #34d399;
+            font-family: monospace;
+            font-size: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .badge {
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-right: 8px;
+            display: inline-block;
+        }
+
+        .toast-alert {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background-color: var(--danger);
+            color: white;
+            padding: 18px 36px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            display: none;
+            z-index: 1000;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            header h1 {
+                font-size: 2.2rem;
+            }
+
+            .topic-header {
+                font-size: 1.3rem;
+                padding: 18px;
+            }
+
+            .concept-header {
+                font-size: 1.15rem;
+                padding-left: 25px;
+            }
+
+            .answer-content {
+                padding: 20px 15px 20px 35px;
+                font-size: 0.98rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>MK's Ultimate Full Stack Master Prep Portal</h1>
+            <p>Advanced Architectural Deep Dives, Production Code & Interview Blueprint</p>
+        </header>
+
+        <div class="topic-card">
+            <div class="topic-header" onclick="toggleSection(this, 'topic')">
+                <span>1. HTML & CSS Interview Smart Answers</span>
+                <span class="arrow-icon">▼</span>
+            </div>
+            <div class="concepts-container">
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>1. Semantic Tags</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <p><strong>Answer:</strong> Semantic tags give meaning to the content. They improve SEO and
+                        readability.</p>
+                    <h4>Examples:</h4>
+                    <ul>
+                        <li><code>&lt;header&gt;</code> &rarr; top section</li>
+                        <li><code>&lt;nav&gt;</code> &rarr; navigation links</li>
+                        <li><code>&lt;section&gt;</code> &rarr; grouped content</li>
+                        <li><code>&lt;article&gt;</code> &rarr; independent content</li>
+                        <li><code>&lt;footer&gt;</code> &rarr; bottom section</li>
+                    </ul>
+                    <h4>Why use?</h4>
+                    <ul>
+                        <li>Better accessibility</li>
+                        <li>Better SEO</li>
+                        <li>Clean code structure</li>
+                    </ul>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>2. Flexbox vs Grid</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <div class="table-responsive">
+                        <table>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Flexbox</th>
+                                <th>Grid</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Dimensions</strong></td>
+                                <td>One-dimensional</td>
+                                <td>Two-dimensional</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Axis Control</strong></td>
+                                <td>Row OR column</td>
+                                <td>Row AND column</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Best For</strong></td>
+                                <td>Alignment</td>
+                                <td>Page layouts</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="smart-box">
+                        <strong>Smart Answer:</strong>
+                        "Use Flexbox for small layouts like navbar, buttons, cards. Use Grid for full page layouts."
+                    </div>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>3. Position Properties</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <h4>Types:</h4>
+                    <ul>
+                        <li><code>static</code> &rarr; default</li>
+                        <li><code>relative</code> &rarr; moves relative to original position</li>
+                        <li><code>absolute</code> &rarr; positioned relative to parent</li>
+                        <li><code>fixed</code> &rarr; fixed on screen</li>
+                        <li><code>sticky</code> &rarr; sticks during scroll</li>
+                    </ul>
+                    <h4>Smart Example:</h4>
+                    <pre><code>position: absolute;
+top: 10px;
+left: 20px;</code></pre>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>4. Responsive Design</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <p><strong>Answer:</strong> Responsive design makes websites work on mobile, tablet, and desktop.
+                    </p>
+                    <h4>Methods:</h4>
+                    <ul>
+                        <li>Media Queries</li>
+                        <li>Flexbox/Grid</li>
+                        <li>Relative units (%, rem, vh, vw)</li>
+                    </ul>
+                    <h4>Example:</h4>
+                    <pre><code>@media (max-width: 768px) {
+  body {
+    background: lightblue;
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>5. Forms</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <p><strong>Answer:</strong> Forms are used to collect user input.</p>
+                    <h4>Important Tags:</h4>
+                    <ul>
+                        <li><code>&lt;form&gt;</code></li>
+                        <li><code>&lt;input&gt;</code></li>
+                        <li><code>&lt;textarea&gt;</code></li>
+                        <li><code>&lt;select&gt;</code></li>
+                        <li><code>&lt;button&gt;</code></li>
+                    </ul>
+                    <h4>Common Input Types:</h4>
+                    <p><span class="badge">text</span> <span class="badge">email</span> <span
+                            class="badge">password</span> <span class="badge">radio</span> <span
+                            class="badge">checkbox</span></p>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>6. CSS Specificity</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <p><strong>Answer:</strong> Specificity decides which CSS rule is applied.</p>
+                    <h4>Priority Order:</h4>
+                    <div class="output-box">Inline &gt; ID &gt; Class &gt; Element</div>
+                    <h4>Example:</h4>
+                    <pre><code>#title { color: red; }   /* higher priority (ID) */
+.title { color: blue; }  /* lower priority (Class) */</code></pre>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>7. display: none vs visibility: hidden</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <div class="table-responsive">
+                        <table>
+                            <tr>
+                                <th>Property</th>
+                                <th>display: none</th>
+                                <th>visibility: hidden</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Layout Impact</strong></td>
+                                <td>Element removed from layout</td>
+                                <td>Element hidden but space remains</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Space Occupied</strong></td>
+                                <td>No space occupied</td>
+                                <td>Space occupied</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>8. inline vs block vs inline-block</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <div class="table-responsive">
+                        <table>
+                            <tr>
+                                <th>Type</th>
+                                <th>New Line</th>
+                                <th>Width/Height</th>
+                            </tr>
+                            <tr>
+                                <td><strong>inline</strong></td>
+                                <td>No</td>
+                                <td>Cannot set</td>
+                            </tr>
+                            <tr>
+                                <td><strong>block</strong></td>
+                                <td>Yes</td>
+                                <td>Can set</td>
+                            </tr>
+                            <tr>
+                                <td><strong>inline-block</strong></td>
+                                <td>No</td>
+                                <td>Can set</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <h4>Examples:</h4>
+                    <ul>
+                        <li><code>inline</code> &rarr; <code>&lt;span&gt;</code></li>
+                        <li><code>block</code> &rarr; <code>&lt;div&gt;</code></li>
+                        <li><code>inline-block</code> &rarr; buttons / menu items</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="topic-card">
+            <div class="topic-header" onclick="toggleSection(this, 'topic')">
+                <span>2. JavaScript / ES5 / ES6+ Smart Answers</span>
+                <span class="arrow-icon">▼</span>
+            </div>
+            <div class="concepts-container">
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>1. var vs let vs const</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <div class="table-responsive">
+                        <table>
+                            <tr>
+                                <th>Feature</th>
+                                <th>var</th>
+                                <th>let</th>
+                                <th>const</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Scope</strong></td>
+                                <td>Function scoped</td>
+                                <td>Block scoped</td>
+                                <td>Block scoped</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Redeclare</strong></td>
+                                <td>Can redeclare</td>
+                                <td>Cannot redeclare</td>
+                                <td>Cannot redeclare</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Update</strong></td>
+                                <td>Can update</td>
+                                <td>Can update</td>
+                                <td>Cannot update</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="smart-box">
+                        <strong>Smart Answer:</strong>
+                        "Prefer let for changing values. Use const by default. Avoid var."
+                    </div>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>2. Hoisting</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <p><strong>Answer:</strong> Hoisting means JavaScript moves declarations to the top before
+                        execution.</p>
+                    <h4>Example:</h4>
+                    <pre><code>console.log(a);
+var a = 10;</code></pre>
+                    <div class="output-box">Output: undefined</div>
+                    <p><em>Reason:</em> Because declaration is hoisted, not initialization.</p>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>3. Closures</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <p><strong>Answer:</strong> Closure means an inner function can access outer function variables even
+                        after outer function execution.</p>
+                    <h4>Example:</h4>
+                    <pre><code>function outer() {
+  let count = 0;
+
+  return function inner() {
+    count++;
+    return count;
+  };
+}</code></pre>
+                    <h4>Uses:</h4>
+                    <p><span class="badge">Data privacy</span> <span class="badge">Counters</span> <span
+                            class="badge">Callbacks</span></p>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>4. Callback, Promise, async/await</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <h4>Callback</h4>
+                    <p>Function passed as argument.</p>
+                    <pre><code>function greet(name, callback) { callback(); }</code></pre>
+
+                    <h4>Promise</h4>
+                    <p>Handles async operations.</p>
+                    <pre><code>fetch().then().catch()</code></pre>
+
+                    <h4>async/await</h4>
+                    <p>Cleaner way to handle promises.</p>
+                    <pre><code>async function getData() { const res = await fetch(url); }</code></pre>
+
+                    <div class="smart-box">
+                        <strong>Smart Answer:</strong>
+                        "Callback &rarr; old approach | Promise &rarr; better handling | async/await &rarr; clean and
+                        modern"
+                    </div>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>5. Arrow Functions</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <p>Short syntax for functions.</p>
+                    <h4>Example:</h4>
+                    <pre><code>const add = (a, b) => a + b;</code></pre>
+                    <h4>Difference:</h4>
+                    <p>Arrow functions do not have their own <code>this</code>.</p>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>6. Array Methods</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <ul>
+                        <li><code>map()</code> &rarr; Transforms array. <br><code>arr.map(x => x * 2)</code></li>
+                        <li><code>filter()</code> &rarr; Filters elements. <br><code>arr.filter(x => x > 10)</code></li>
+                        <li><code>reduce()</code> &rarr; Reduces array to single value.
+                            <br><code>arr.reduce((sum, x) => sum + x, 0)</code>
+                        </li>
+                        <li><code>forEach()</code> &rarr; Loops through array.
+                            <br><code>arr.forEach(x => console.log(x))</code>
+                        </li>
+                    </ul>
+                    <div class="smart-box">
+                        <strong>Smart Difference:</strong>
+                        "map() &rarr; returns new array | filter() &rarr; returns filtered array | reduce() &rarr;
+                        returns single value | forEach() &rarr; just loops"
+                    </div>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>7. Destructuring</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <p>Extract values easily.</p>
+                    <pre><code>// Array Destructuring
+const [a, b] = [1, 2];
+
+// Object Destructuring
+const {name, age} = user;</code></pre>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>8. Spread & Rest Operator</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <h4>Spread (...)</h4>
+                    <p>Expands elements.</p>
+                    <pre><code>const arr2 = [...arr1];</code></pre>
+
+                    <h4>Rest (...)</h4>
+                    <p>Collects values.</p>
+                    <pre><code>function sum(...nums) {}</code></pre>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>9. Event Bubbling</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <p><strong>Answer:</strong> Event starts from child element and bubbles up to parent.</p>
+                    <h4>Example Chain:</h4>
+                    <div class="output-box">button &rarr; div &rarr; body</div>
+                    <h4>Stop Bubbling:</h4>
+                    <pre><code>event.stopPropagation();</code></pre>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>10. == vs ===</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <div class="table-responsive">
+                        <table>
+                            <tr>
+                                <th>Operator</th>
+                                <th>==</th>
+                                <th>===</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Comparison Type</strong></td>
+                                <td>Checks value</td>
+                                <td>Checks value & type</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Coercion</strong></td>
+                                <td>Type conversion happens</td>
+                                <td>No type conversion</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <h4>Example:</h4>
+                    <pre><code>5 == "5"   // true
+5 === "5"  // false</code></pre>
+                    <div class="smart-box">
+                        <strong>Smart Answer:</strong>
+                        "Always use === for safer comparison."
+                    </div>
+                </div>
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')"
+                    style="border-left-color: var(--warning);">
+                    <span>💡 Quick Final Interview Tips & Golden Rules</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+                <div class="answer-content">
+                    <p>If interviewer asks:</p>
+                    <ul>
+                        <li><strong>“Explain simply”</strong> &rarr; give definition + small example</li>
+                        <li><strong>“Difference?”</strong> &rarr; use table format</li>
+                        <li><strong>“Real-time usage?”</strong> &rarr; mention project examples</li>
+                    </ul>
+                    <div class="smart-box">
+                        <strong>Real-time Usage Demonstration Example:</strong>
+                        "In my project, I used Flexbox for navbar alignment and async/await for API calls."
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="topic-card">
+            <div class="topic-header" onclick="toggleSection(this, 'topic')">
+                <span>3. Angular Interview Preparation – Smart & Simple Answers</span>
+                <span class="arrow-icon">▼</span>
+            </div>
+
+            <div class="concepts-container">
+
+                <!-- Components -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>1. Components</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+                    <p><strong>Answer:</strong> Components are the building blocks of Angular applications. Each
+                        component controls a part of the UI.</p>
+
+                    <h4>Example:</h4>
+                    <pre><code>@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html'
+})
+export class UserComponent {
+  name = 'MK';
+}</code></pre>
+
+                    <div class="smart-box">
+                        <strong>Smart Answer:</strong>
+                        "Component is used to control a specific part of the UI in Angular."
+                    </div>
+                </div>
+
+                <!-- Modules -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>2. Modules</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+                    <p><strong>Answer:</strong> Modules group related components, directives, pipes, and services
+                        together.</p>
+
+                    <h4>Example:</h4>
+                    <pre><code>@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }</code></pre>
+
+                    <div class="smart-box">
+                        <strong>Smart Answer:</strong>
+                        "Module is a container that organizes Angular features together."
+                    </div>
+                </div>
+
+                <!-- Services -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>3. Services</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+                    <p><strong>Answer:</strong> Services are used for business logic, API calls, and data sharing.</p>
+
+                    <h4>Example:</h4>
+                    <pre><code>@Injectable({
+  providedIn: 'root'
+})
+export class UserService {
+  getUsers() {
+    return ['A', 'B'];
+  }
+}</code></pre>
+
+                    <div class="smart-box">
+                        <strong>Smart Answer:</strong>
+                        "Services are used to write reusable business logic and API-related code."
+                    </div>
+                </div>
+
+                <!-- Data Binding -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>4. Data Binding</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <h4>Interpolation</h4>
+                    <pre><code>&lt;h1&gt;{{name}}&lt;/h1&gt;</code></pre>
+                    <p>Displays TypeScript data in HTML.</p>
+
+                    <h4>Property Binding</h4>
+                    <pre><code>&lt;img [src]="imageUrl"&gt;</code></pre>
+                    <p>Binds component data to HTML properties.</p>
+
+                    <h4>Event Binding</h4>
+                    <pre><code>&lt;button (click)="save()"&gt;Save&lt;/button&gt;</code></pre>
+                    <p>Handles user events like click.</p>
+
+                    <h4>Two-Way Binding</h4>
+                    <pre><code>&lt;input [(ngModel)]="name"&gt;</code></pre>
+                    <p>Used for both input and output data flow.</p>
+
+                    <div class="smart-box">
+                        <strong>Quick Formula:</strong>
+                        "Interpolation → display | Property → send data | Event → receive action | Two-way → both"
+                    </div>
+
+                </div>
+
+                <!-- Directives -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>5. Directives</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <h4>Structural Directives</h4>
+                    <p>Modify DOM structure.</p>
+
+                    <pre><code>*ngIf
+*ngFor</code></pre>
+
+                    <h4>Attribute Directives</h4>
+                    <p>Change style or behavior.</p>
+
+                    <pre><code>[ngStyle]
+[ngClass]</code></pre>
+
+                    <div class="smart-box">
+                        <strong>Smart Answer:</strong>
+                        "Structural directives add/remove elements. Attribute directives modify appearance or behavior."
+                    </div>
+
+                </div>
+
+                <!-- Dependency Injection -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>6. Dependency Injection (DI)</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+                    <p><strong>Answer:</strong> Dependency Injection automatically provides required objects to
+                        components and services.</p>
+
+                    <pre><code>constructor(private userService: UserService) { }</code></pre>
+
+                    <div class="smart-box">
+                        <strong>Smart Answer:</strong>
+                        "DI improves code reusability and reduces manual object creation."
+                    </div>
+                </div>
+
+                <!-- Lifecycle Hooks -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>7. Lifecycle Hooks</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <div class="table-responsive">
+                        <table>
+                            <tr>
+                                <th>Hook</th>
+                                <th>Purpose</th>
+                            </tr>
+
+                            <tr>
+                                <td>ngOnInit()</td>
+                                <td>Runs after component initialization</td>
+                            </tr>
+
+                            <tr>
+                                <td>ngOnChanges()</td>
+                                <td>Runs when input changes</td>
+                            </tr>
+
+                            <tr>
+                                <td>ngOnDestroy()</td>
+                                <td>Runs before component destroy</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <pre><code>ngOnInit() {
+  console.log('Component Loaded');
+}</code></pre>
+
+                </div>
+
+                <!-- Routing -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>8. Routing and Navigation</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+                    <p><strong>Answer:</strong> Routing allows navigation between components without reloading the page.
+                    </p>
+
+                    <pre><code>const routes: Routes = [
+  { path: 'home', component: HomeComponent }
+];</code></pre>
+
+                    <pre><code>&lt;a routerLink="/home"&gt;Home&lt;/a&gt;</code></pre>
+
+                    <div class="smart-box">
+                        <strong>Smart Answer:</strong>
+                        "Angular routing enables SPA navigation between components."
+                    </div>
+                </div>
+
+                <!-- Angular Forms -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>9. Angular Forms</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <h4>Template Driven Forms</h4>
+                    <pre><code>&lt;input [(ngModel)]="name"&gt;</code></pre>
+                    <p>Simple and HTML-based.</p>
+
+                    <h4>Reactive Forms</h4>
+                    <pre><code>this.form = new FormGroup({
+  name: new FormControl('')
+});</code></pre>
+                    <p>More scalable and powerful.</p>
+
+                    <div class="smart-box">
+                        <strong>Difference:</strong>
+                        "Template-driven → simple | Reactive → advanced and scalable"
+                    </div>
+
+                </div>
+
+                <!-- RxJS -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>10. Observables and RxJS</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+                    <p><strong>Answer:</strong> Observables are used to handle asynchronous operations like API calls
+                        and events.</p>
+
+                    <pre><code>this.http.get(url).subscribe(data => {
+  console.log(data);
+});</code></pre>
+
+                    <h4>Common Operators:</h4>
+                    <ul>
+                        <li>map()</li>
+                        <li>filter()</li>
+                        <li>subscribe()</li>
+                    </ul>
+
+                    <div class="smart-box">
+                        <strong>Smart Answer:</strong>
+                        "Observables handle async data streams efficiently in Angular."
+                    </div>
+                </div>
+
+                <!-- Angular CLI -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>11. Angular CLI and Project Structure</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <h4>Common Commands:</h4>
+
+                    <pre><code>ng new my-app
+ng serve
+ng generate component home
+ng build</code></pre>
+
+                    <h4>Important Folders:</h4>
+
+                    <div class="table-responsive">
+                        <table>
+                            <tr>
+                                <th>Folder</th>
+                                <th>Purpose</th>
+                            </tr>
+
+                            <tr>
+                                <td>src/app</td>
+                                <td>Components and services</td>
+                            </tr>
+
+                            <tr>
+                                <td>assets</td>
+                                <td>Images/files</td>
+                            </tr>
+
+                            <tr>
+                                <td>environments</td>
+                                <td>Configurations</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+
+                <!-- HttpClient -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>12. HttpClient for API Communication</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+                    <p><strong>Answer:</strong> HttpClient is used to communicate with backend APIs.</p>
+
+                    <pre><code>constructor(private http: HttpClient) { }
+
+getUsers() {
+  return this.http.get('api/users');
+}</code></pre>
+
+                    <div class="smart-box">
+                        <strong>Smart Answer:</strong>
+                        "HttpClient sends HTTP requests and receives API responses from backend services."
+                    </div>
+                </div>
+
+                <!-- Final Angular Tips -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')"
+                    style="border-left-color: var(--warning);">
+                    <span>💡 Final Angular Interview Tips</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <ul>
+                        <li>Explain with small real-time examples.</li>
+                        <li>Mention project usage whenever possible.</li>
+                        <li>Use smart keywords like reusable, scalable, SPA, reactive, asynchronous.</li>
+                    </ul>
+
+                    <div class="smart-box">
+                        <strong>Real-Time Example:</strong>
+                        "In my project, I used Reactive Forms for validation and HttpClient for backend API
+                        integration."
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- ===================================================== -->
+        <!-- 20 JAVA INTERVIEW PROBLEMS -->
+        <!-- ===================================================== -->
+
+        <div class="topic-card">
+
+            <div class="topic-header" onclick="toggleSection(this, 'topic')">
+                <span>5. Top 20 Java Interview Problems with Full Solutions</span>
+                <span class="arrow-icon">▼</span>
+            </div>
+
+            <div class="concepts-container">
+
+                <!-- Problem 1 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>1. Reverse a String</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <p><strong>Problem:</strong> Reverse given string.</p>
+
+                    <pre><code>public class ReverseString {
+
+    public static void main(String[] args) {
+
+        String str = "hello";
+
+        String reversed = "";
+
+        for(int i = str.length() - 1; i >= 0; i--) {
+
+            reversed += str.charAt(i);
+        }
+
+        System.out.println(reversed);
+    }
+}</code></pre>
+
+                    <div class="output-box">
+                        Output: olleh
+                    </div>
+
+                    <div class="smart-box">
+                        <strong>Interview Answer:</strong>
+                        Time Complexity = O(n)
+                    </div>
+
+                </div>
+
+                <!-- Problem 2 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>2. Palindrome String</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>public class Palindrome {
+
+    public static void main(String[] args) {
+
+        String str = "madam";
+
+        String reversed = "";
+
+        for(int i = str.length() - 1; i >= 0; i--) {
+
+            reversed += str.charAt(i);
+        }
+
+        if(str.equals(reversed)) {
+
+            System.out.println("Palindrome");
+
+        } else {
+
+            System.out.println("Not Palindrome");
+        }
+    }
+}</code></pre>
+
+                    <div class="output-box">
+                        Output: Palindrome
+                    </div>
+
+                </div>
+
+                <!-- Problem 3 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>3. Anagram Checking</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>import java.util.Arrays;
+
+public class Anagram {
+
+    public static void main(String[] args) {
+
+        String str1 = "listen";
+        String str2 = "silent";
+
+        char[] arr1 = str1.toCharArray();
+        char[] arr2 = str2.toCharArray();
+
+        Arrays.sort(arr1);
+        Arrays.sort(arr2);
+
+        System.out.println(Arrays.equals(arr1, arr2));
+    }
+}</code></pre>
+
+                    <div class="output-box">
+                        Output: true
+                    </div>
+
+                </div>
+
+                <!-- Problem 4 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>4. Find Duplicates in Array</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>public class DuplicateArray {
+
+    public static void main(String[] args) {
+
+        int[] arr = {1,2,3,2,4,1};
+
+        for(int i = 0; i < arr.length; i++) {
+
+            for(int j = i + 1; j < arr.length; j++) {
+
+                if(arr[i] == arr[j]) {
+
+                    System.out.println(arr[i]);
+                }
+            }
+        }
+    }
+}</code></pre>
+
+                    <div class="output-box">
+                        Output: 2 1
+                    </div>
+
+                </div>
+
+                <!-- Problem 5 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>5. Two Sum Problem</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>public class TwoSum {
+
+    public static void main(String[] args) {
+
+        int[] arr = {2,7,11,15};
+
+        int target = 9;
+
+        for(int i = 0; i < arr.length; i++) {
+
+            for(int j = i + 1; j < arr.length; j++) {
+
+                if(arr[i] + arr[j] == target) {
+
+                    System.out.println(arr[i] + " " + arr[j]);
+                }
+            }
+        }
+    }
+}</code></pre>
+
+                    <div class="output-box">
+                        Output: 2 7
+                    </div>
+
+                </div>
+
+                <!-- Problem 6 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>6. Reverse an Array</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>import java.util.Arrays;
+
+public class ReverseArray {
+
+    public static void main(String[] args) {
+
+        int[] arr = {1,2,3,4,5};
+
+        int start = 0;
+        int end = arr.length - 1;
+
+        while(start < end) {
+
+            int temp = arr[start];
+
+            arr[start] = arr[end];
+
+            arr[end] = temp;
+
+            start++;
+            end--;
+        }
+
+        System.out.println(Arrays.toString(arr));
+    }
+}</code></pre>
+
+                </div>
+
+                <!-- Problem 7 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>7. Rotate Array</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>import java.util.Arrays;
+
+public class RotateArray {
+
+    public static void main(String[] args) {
+
+        int[] arr = {1,2,3,4,5};
+
+        int last = arr[arr.length - 1];
+
+        for(int i = arr.length - 1; i > 0; i--) {
+
+            arr[i] = arr[i - 1];
+        }
+
+        arr[0] = last;
+
+        System.out.println(Arrays.toString(arr));
+    }
+}</code></pre>
+
+                </div>
+
+                <!-- Problem 8 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>8. Frequency using HashMap</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>import java.util.HashMap;
+
+public class Frequency {
+
+    public static void main(String[] args) {
+
+        String str = "programming";
+
+        HashMap<Character, Integer> map =
+                new HashMap<>();
+
+        for(char ch : str.toCharArray()) {
+
+            map.put(ch,
+                    map.getOrDefault(ch, 0) + 1);
+        }
+
+        System.out.println(map);
+    }
+}</code></pre>
+
+                </div>
+
+                <!-- Problem 9 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>9. First Non-Repeated Character</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class FirstNonRepeated {
+
+    public static void main(String[] args) {
+
+        String str = "aabbcddee";
+
+        LinkedHashMap<Character, Integer> map =
+                new LinkedHashMap<>();
+
+        for(char ch : str.toCharArray()) {
+
+            map.put(ch,
+                    map.getOrDefault(ch, 0) + 1);
+        }
+
+        for(Map.Entry<Character, Integer> entry :
+                map.entrySet()) {
+
+            if(entry.getValue() == 1) {
+
+                System.out.println(entry.getKey());
+
+                break;
+            }
+        }
+    }
+}</code></pre>
+
+                </div>
+
+                <!-- Problem 10 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>10. Fibonacci Series</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>public class Fibonacci {
+
+    public static void main(String[] args) {
+
+        int a = 0;
+        int b = 1;
+
+        System.out.print(a + " " + b);
+
+        for(int i = 2; i < 10; i++) {
+
+            int c = a + b;
+
+            System.out.print(" " + c);
+
+            a = b;
+            b = c;
+        }
+    }
+}</code></pre>
+
+                </div>
+
+                <!-- Problem 11 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>11. Prime Number</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>public class Prime {
+
+    public static void main(String[] args) {
+
+        int num = 13;
+
+        boolean isPrime = true;
+
+        for(int i = 2; i <= num / 2; i++) {
+
+            if(num % i == 0) {
+
+                isPrime = false;
+
+                break;
+            }
+        }
+
+        System.out.println(isPrime);
+    }
+}</code></pre>
+
+                </div>
+
+                <!-- Problem 12 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>12. Factorial</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>public class Factorial {
+
+    public static void main(String[] args) {
+
+        int num = 5;
+
+        int fact = 1;
+
+        for(int i = 1; i <= num; i++) {
+
+            fact = fact * i;
+        }
+
+        System.out.println(fact);
+    }
+}</code></pre>
+
+                </div>
+
+                <!-- Problem 13 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>13. FizzBuzz</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>public class FizzBuzz {
+
+    public static void main(String[] args) {
+
+        for(int i = 1; i <= 20; i++) {
+
+            if(i % 3 == 0 && i % 5 == 0) {
+
+                System.out.println("FizzBuzz");
+
+            } else if(i % 3 == 0) {
+
+                System.out.println("Fizz");
+
+            } else if(i % 5 == 0) {
+
+                System.out.println("Buzz");
+
+            } else {
+
+                System.out.println(i);
+            }
+        }
+    }
+}</code></pre>
+
+                </div>
+
+                <!-- Problem 14 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>14. Leap Year</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>public class LeapYear {
+
+    public static void main(String[] args) {
+
+        int year = 2024;
+
+        if((year % 4 == 0 && year % 100 != 0)
+                || (year % 400 == 0)) {
+
+            System.out.println("Leap Year");
+
+        } else {
+
+            System.out.println("Not Leap Year");
+        }
+    }
+}</code></pre>
+
+                </div>
+
+                <!-- Problem 15 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>15. Reverse Linked List</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>class Node {
+
+    int data;
+    Node next;
+
+    Node(int data) {
+
+        this.data = data;
+    }
+}
+
+public class ReverseLinkedList {
+
+    public static void main(String[] args) {
+
+        Node head = new Node(1);
+
+        head.next = new Node(2);
+
+        head.next.next = new Node(3);
+
+        Node prev = null;
+
+        Node current = head;
+
+        while(current != null) {
+
+            Node next = current.next;
+
+            current.next = prev;
+
+            prev = current;
+
+            current = next;
+        }
+
+        while(prev != null) {
+
+            System.out.println(prev.data);
+
+            prev = prev.next;
+        }
+    }
+}</code></pre>
+
+                </div>
+
+                <!-- Problem 16 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>16. Detect Loop in Linked List</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>class Node {
+
+    int data;
+
+    Node next;
+
+    Node(int data) {
+
+        this.data = data;
+    }
+}
+
+public class DetectLoop {
+
+    public static void main(String[] args) {
+
+        Node head = new Node(1);
+
+        head.next = new Node(2);
+
+        head.next.next = new Node(3);
+
+        head.next.next.next = head;
+
+        Node slow = head;
+
+        Node fast = head;
+
+        boolean loop = false;
+
+        while(fast != null && fast.next != null) {
+
+            slow = slow.next;
+
+            fast = fast.next.next;
+
+            if(slow == fast) {
+
+                loop = true;
+
+                break;
+            }
+        }
+
+        System.out.println(loop);
+    }
+}</code></pre>
+
+                </div>
+
+                <!-- Problem 17 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>17. Find Middle Element in Linked List</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>class Node {
+
+    int data;
+
+    Node next;
+
+    Node(int data) {
+
+        this.data = data;
+    }
+}
+
+public class MiddleElement {
+
+    public static void main(String[] args) {
+
+        Node head = new Node(1);
+
+        head.next = new Node(2);
+
+        head.next.next = new Node(3);
+
+        head.next.next.next = new Node(4);
+
+        Node slow = head;
+
+        Node fast = head;
+
+        while(fast != null && fast.next != null) {
+
+            slow = slow.next;
+
+            fast = fast.next.next;
+        }
+
+        System.out.println(slow.data);
+    }
+}</code></pre>
+
+                </div>
+
+                <!-- Problem 18 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>18. Java 8 Stream filter()</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>import java.util.Arrays;
+import java.util.List;
+
+public class StreamFilter {
+
+    public static void main(String[] args) {
+
+        List<String> names =
+                Arrays.asList("Ram", "John", "Ravi");
+
+        names.stream()
+                .filter(name -> name.startsWith("R"))
+                .forEach(System.out::println);
+    }
+}</code></pre>
+
+                </div>
+
+                <!-- Problem 19 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>19. Java 8 groupingBy()</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>import java.util.*;
+import java.util.stream.Collectors;
+
+public class GroupingExample {
+
+    public static void main(String[] args) {
+
+        List<String> names =
+                Arrays.asList("Ram", "Ravi", "John");
+
+        Map<Integer, List<String>> grouped =
+                names.stream()
+                        .collect(Collectors.groupingBy(
+                                String::length));
+
+        System.out.println(grouped);
+    }
+}</code></pre>
+
+                </div>
+
+                <!-- Problem 20 -->
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+                    <span>20. Sort Map by Values</span>
+                    <span class="arrow-icon">▼</span>
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>import java.util.*;
+
+public class SortMap {
+
+    public static void main(String[] args) {
+
+        HashMap<String, Integer> map =
+                new HashMap<>();
+
+        map.put("A", 3);
+        map.put("B", 1);
+        map.put("C", 2);
+
+        List<Map.Entry<String, Integer>> list =
+                new ArrayList<>(map.entrySet());
+
+        list.sort(Map.Entry.comparingByValue());
+
+        System.out.println(list);
+    }
+}</code></pre>
+
+                </div>
+
+                <!-- Final Tips -->
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')"
+                    style="border-left-color: var(--warning);">
+
+                    <span>💡 Final Coding Interview Tips</span>
+                    <span class="arrow-icon">▼</span>
+
+                </div>
+
+                <div class="answer-content">
+
+                    <ul>
+                        <li>Explain logic first</li>
+                        <li>Mention Time Complexity</li>
+                        <li>Write clean code</li>
+                        <li>Explain optimization approach</li>
+                        <li>Use HashMap for optimization</li>
+                    </ul>
+
+                    <div class="smart-box">
+
+                        <strong>Golden Interview Line:</strong>
+
+                        "First I’ll explain brute force approach, then optimize using HashMap or two-pointer technique."
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- ADVANCED JAVA OOP INTERVIEW PREPARATION -->
+        <!-- ===================================================== -->
+
+        <div class="topic-card">
+
+            <div class="topic-header" onclick="toggleSection(this, 'topic')">
+
+                <span>6. Advanced Java OOP Interview Preparation</span>
+
+                <span class="arrow-icon">▼</span>
+
+            </div>
+
+            <div class="concepts-container">
+
+                <!-- ===================================================== -->
+                <!-- INHERITANCE -->
+                <!-- ===================================================== -->
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+
+                    <span>1. Inheritance & Polymorphism</span>
+
+                    <span class="arrow-icon">▼</span>
+
+                </div>
+
+                <div class="answer-content">
+
+                    <p>
+                        This example demonstrates:
+                    </p>
+
+                    <ul>
+
+                        <li>Inheritance</li>
+
+                        <li>Method Overriding</li>
+
+                        <li>Runtime Polymorphism</li>
+
+                        <li>Dynamic Method Dispatch</li>
+
+                    </ul>
+
+                    <h4>Real-Time Banking Architecture</h4>
+
+                    <div class="table-responsive">
+
+                        <table>
+
+                            <tr>
+                                <th>Class</th>
+                                <th>Purpose</th>
+                            </tr>
+
+                            <tr>
+                                <td>Account</td>
+                                <td>Base class</td>
+                            </tr>
+
+                            <tr>
+                                <td>SavingsAccount</td>
+                                <td>Minimum balance validation</td>
+                            </tr>
+
+                            <tr>
+                                <td>CurrentAccount</td>
+                                <td>Overdraft support</td>
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+                    <pre><code>class Account {
+
+    protected String accountHolder;
+
+    protected double balance;
+
+    public Account(String accountHolder,
+                   double balance) {
+
+        this.accountHolder = accountHolder;
+
+        this.balance = balance;
+    }
+
+    public void deposit(double amount) {
+
+        balance += amount;
+
+        System.out.println(
+                amount + " deposited");
+    }
+
+    public void withdraw(double amount) {
+
+        if(balance >= amount) {
+
+            balance -= amount;
+
+            System.out.println(
+                    amount + " withdrawn");
+
+        } else {
+
+            System.out.println(
+                    "Insufficient Balance");
+        }
+    }
+}
+
+class SavingsAccount extends Account {
+
+    private double minimumBalance = 1000;
+
+    public SavingsAccount(String accountHolder,
+                          double balance) {
+
+        super(accountHolder, balance);
+    }
+
+    @Override
+    public void withdraw(double amount) {
+
+        if((balance - amount)
+                >= minimumBalance) {
+
+            balance -= amount;
+
+            System.out.println(
+                    "Savings Withdrawal Success");
+
+        } else {
+
+            System.out.println(
+                    "Minimum Balance Required");
+        }
+    }
+}</code></pre>
+
+                    <div class="smart-box">
+
+                        <strong>Important Interview Point:</strong>
+
+                        "Parent reference + child object achieves
+                        runtime polymorphism."
+
+                    </div>
+
+                    <pre><code>Account acc =
+        new SavingsAccount(
+                "Mukesh",
+                10000);</code></pre>
+
+                </div>
+
+                <!-- ===================================================== -->
+                <!-- ENCAPSULATION -->
+                <!-- ===================================================== -->
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+
+                    <span>2. Encapsulation & Data Hiding</span>
+
+                    <span class="arrow-icon">▼</span>
+
+                </div>
+
+                <div class="answer-content">
+
+                    <p>
+                        Encapsulation means hiding data
+                        using private variables and
+                        accessing them through methods.
+                    </p>
+
+                    <pre><code>class Employee {
+
+    private String employeeName;
+
+    private double salary;
+
+    public void setSalary(double salary) {
+
+        if(salary > 0) {
+
+            this.salary = salary;
+
+        } else {
+
+            System.out.println(
+                    "Invalid Salary");
+        }
+    }
+
+    public double getSalary() {
+
+        return salary;
+    }
+}</code></pre>
+
+                    <h4>Advantages</h4>
+
+                    <ul>
+
+                        <li>Data Security</li>
+
+                        <li>Controlled Access</li>
+
+                        <li>Validation</li>
+
+                        <li>Maintainability</li>
+
+                    </ul>
+
+                    <div class="smart-box">
+
+                        <strong>Interview Answer:</strong>
+
+                        "Encapsulation protects object data
+                        and provides controlled access."
+
+                    </div>
+
+                </div>
+
+                <!-- ===================================================== -->
+                <!-- ABSTRACTION -->
+                <!-- ===================================================== -->
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+
+                    <span>3. Abstraction (Interface vs Abstract Class)</span>
+
+                    <span class="arrow-icon">▼</span>
+
+                </div>
+
+                <div class="answer-content">
+
+                    <h4>Payment Gateway Example</h4>
+
+                    <pre><code>interface PaymentGateway {
+
+    void processPayment(
+            double amount);
+}
+
+class PayPalPayment
+        implements PaymentGateway {
+
+    @Override
+    public void processPayment(
+            double amount) {
+
+        System.out.println(
+                "PayPal Payment: "
+                        + amount);
+    }
+}</code></pre>
+
+                    <div class="table-responsive">
+
+                        <table>
+
+                            <tr>
+                                <th>Abstract Class</th>
+                                <th>Interface</th>
+                            </tr>
+
+                            <tr>
+                                <td>Can contain constructors</td>
+                                <td>No constructors</td>
+                            </tr>
+
+                            <tr>
+                                <td>Single inheritance</td>
+                                <td>Multiple inheritance</td>
+                            </tr>
+
+                            <tr>
+                                <td>extends keyword</td>
+                                <td>implements keyword</td>
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+                    <div class="smart-box">
+
+                        <strong>Interview Answer:</strong>
+
+                        "Abstraction hides implementation
+                        details and exposes only essential
+                        functionality."
+
+                    </div>
+
+                </div>
+
+                <!-- ===================================================== -->
+                <!-- OVERLOADING -->
+                <!-- ===================================================== -->
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+
+                    <span>4. Method Overloading</span>
+
+                    <span class="arrow-icon">▼</span>
+
+                </div>
+
+                <div class="answer-content">
+
+                    <p>
+                        Same method name with
+                        different parameters.
+                    </p>
+
+                    <pre><code>class NotificationService {
+
+    public void sendNotification(
+            String message,
+            String email) {
+
+        System.out.println(
+                "Email Sent");
+    }
+
+    public void sendNotification(
+            String message,
+            long phoneNumber) {
+
+        System.out.println(
+                "SMS Sent");
+    }
+}</code></pre>
+
+                    <div class="smart-box">
+
+                        <strong>Interview Point:</strong>
+
+                        "Method overloading is compile-time
+                        polymorphism."
+
+                    </div>
+
+                </div>
+
+                <!-- ===================================================== -->
+                <!-- JAVA 8 -->
+                <!-- ===================================================== -->
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+
+                    <span>5. Java 8 Interface Features</span>
+
+                    <span class="arrow-icon">▼</span>
+
+                </div>
+
+                <div class="answer-content">
+
+                    <pre><code>interface NotificationProvider {
+
+    void sendNotification(
+            String recipient,
+            String message);
+
+    default void logDetails() {
+
+        System.out.println(
+                "Notification Logged");
+    }
+
+    static boolean validate(
+            String message) {
+
+        return message != null;
+    }
+}</code></pre>
+
+                    <h4>Java 8 Features</h4>
+
+                    <ul>
+
+                        <li>Default Methods</li>
+
+                        <li>Static Methods</li>
+
+                        <li>Lambda Expressions</li>
+
+                        <li>Streams API</li>
+
+                    </ul>
+
+                    <pre><code>Runnable r = () -> {
+
+    System.out.println(
+            "Thread Running");
+};</code></pre>
+
+                    <div class="smart-box">
+
+                        <strong>Interview Point:</strong>
+
+                        "Default methods allow interfaces
+                        to contain method implementations."
+
+                    </div>
+
+                </div>
+
+                <!-- ===================================================== -->
+                <!-- STRATEGY PATTERN -->
+                <!-- ===================================================== -->
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')">
+
+                    <span>6. Strategy Pattern</span>
+
+                    <span class="arrow-icon">▼</span>
+
+                </div>
+
+                <div class="answer-content">
+
+                    <p>
+                        Strategy Pattern allows changing
+                        behavior dynamically.
+                    </p>
+
+                    <pre><code>interface TaxCalculator {
+
+    double calculateTax(
+            double price);
+}
+
+class IndiaTaxCalculator
+        implements TaxCalculator {
+
+    @Override
+    public double calculateTax(
+            double price) {
+
+        return price * 0.18;
+    }
+}</code></pre>
+
+                    <h4>Advantages</h4>
+
+                    <ul>
+
+                        <li>Loose Coupling</li>
+
+                        <li>Scalable Architecture</li>
+
+                        <li>Dynamic Behavior</li>
+
+                        <li>Easy Maintenance</li>
+
+                    </ul>
+
+                    <div class="smart-box">
+
+                        <strong>Golden Interview Line:</strong>
+
+                        "Strategy pattern avoids
+                        hardcoded if-else conditions
+                        and improves scalability."
+
+                    </div>
+
+                </div>
+
+                <!-- ===================================================== -->
+                <!-- FINAL REVISION -->
+                <!-- ===================================================== -->
+
+                <div class="concept-header" onclick="toggleSection(this, 'concept')"
+                    style="border-left-color: var(--warning);">
+
+                    <span>💡 Final OOP Interview Revision</span>
+
+                    <span class="arrow-icon">▼</span>
+
+                </div>
+
+                <div class="answer-content">
+
+                    <div class="table-responsive">
+
+                        <table>
+
+                            <tr>
+                                <th>Concept</th>
+                                <th>Main Point</th>
+                            </tr>
+
+                            <tr>
+                                <td>Inheritance</td>
+                                <td>Reuse parent properties</td>
+                            </tr>
+
+                            <tr>
+                                <td>Polymorphism</td>
+                                <td>Different behavior</td>
+                            </tr>
+
+                            <tr>
+                                <td>Encapsulation</td>
+                                <td>Data hiding</td>
+                            </tr>
+
+                            <tr>
+                                <td>Abstraction</td>
+                                <td>Hide implementation</td>
+                            </tr>
+
+                            <tr>
+                                <td>Overloading</td>
+                                <td>Compile-time polymorphism</td>
+                            </tr>
+
+                            <tr>
+                                <td>Overriding</td>
+                                <td>Runtime polymorphism</td>
+                            </tr>
+
+                            <tr>
+                                <td>Interface</td>
+                                <td>Loose coupling</td>
+                            </tr>
+
+                            <tr>
+                                <td>Strategy Pattern</td>
+                                <td>Dynamic behavior</td>
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+                    <div class="smart-box">
+
+                        <strong>Ultimate Interview Answer:</strong>
+
+                        "OOP improves scalability,
+                        maintainability, reusability,
+                        and modular architecture."
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="toast" class="toast-alert">Security Notice: Please collapse all expanded inner configurations before
+        closing!</div>
+
+    <script>
+        function toggleSection(element, type) {
+            const currentContainer = element.nextElementSibling;
+            const isOpening = (window.getComputedStyle(currentContainer).display === 'none');
+
+            if (!isOpening) {
+                if (type === 'topic') {
+                    const openAnswers = currentContainer.querySelectorAll('.answer-content[style*="display: block"]');
+                    if (openAnswers.length > 0) { showToast(); return; }
+                }
+                currentContainer.style.display = 'none';
+                element.classList.remove('active');
+            } else {
+                currentContainer.style.display = 'block';
+                element.classList.add('active');
+            }
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3500);
+        }
+    </script>
+</body>
+
+</html>
